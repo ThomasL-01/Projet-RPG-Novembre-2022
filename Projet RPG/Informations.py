@@ -7,7 +7,7 @@ infos_classes={'ninja':'Dégats: 20, Vie: 700, Vitesse: 25, Esquive: 30%,\n Chan
 
 classes = {'ninja': {'damages':20, 'PV':700, 'speed': 25, 'dodge':30, 'crit':50},
         'warrior': {'damages':20, 'PV':1200, 'speed': 20, 'dodge':20, 'crit':20},
-        'skeleton': {'damages':35, 'PV':180, 'speed': 15, 'dodge':15, 'crit':75},
+        'skeleton': {'damages':35, 'PV':1, 'speed': 15, 'dodge':15, 'crit':75},
         "goblin":{'damages':10, 'PV':50, 'speed': 25, 'dodge':30, 'crit':50},
         "fire_spirit":{'damages':20, 'PV':30, 'speed': 50, 'dodge':30, 'crit':50},
         "rat":{'damages':20, 'PV':40, 'speed': 30, 'dodge':30, 'crit':50}

@@ -19,6 +19,10 @@ def destroy_widgets():
         widget.destroy()
     widget_lst.clear()
 
+def destroy_anim():
+    for anim in anim_lst:
+        anim.stop_anim()
+
 #Pour recréer une fenètre basique rapidement
 def create_window():
     window = Tk()
@@ -146,12 +150,11 @@ def class_choice_menu():
 #Menu de fight
 def game_menu():#C'est juste un 1er test
     player = Player(player_class, player_pseudo)
-    nb_events = randint(1,5)
     bg_nb = randint(1,2) #choix entre bg 1 et 2
     game_window , width, height= create_window()
 
 
-    def  next_event(biome,nb_events = nb_events):
+    def  next_event(biome,nb_events):
         if nb_events > 0:
             event = choice(lst_event)
             if event == "passive_mob":
@@ -170,7 +173,7 @@ def game_menu():#C'est juste un 1er test
             destroy_widgets()
             direction_menu()
     
-    def passive_fight(biome,nb_events = nb_events):
+    def passive_fight(biome,nb_events):
         nb_events-=1
         bg = PhotoImage(file = f"{biome}{bg_nb}.png")
         
@@ -210,14 +213,10 @@ def game_menu():#C'est juste un 1er test
             game_window.after(infos_anim[player_class][player.current_anim]["max_frame"]*infos_anim[player_class][player.current_anim]["speed"],set_anim)
             check_end_fight()
             game_window.after(1500,update_fight)
-       
-        def delete_anim():
-            player_anim.label.destroy()
-            bot_anim.label.destroy()
 
         def idle_anim(x,y,perso,object1,repeat):
             perso.current_anim = "idle"
-            object1.stop_update() #arrete l'anim attack
+            object1.stop_anim() #arrete l'anim attack
             object = AnimatedGif(x=x,y=y,max_frame =infos_anim[perso.classe][perso.current_anim]["max_frame"],
                 label = Label(game_window, bg = "black"), root=game_window, path=f"{perso.classe}/{perso.current_anim}.gif",
                 speed=infos_anim[perso.classe][perso.current_anim]["speed"],repeat=repeat, zoom=infos_anim[perso.classe][perso.current_anim]["zoom"])
@@ -252,13 +251,13 @@ def game_menu():#C'est juste un 1er test
                         dialogue_box.config(text = "Vous avez été réssucité ! \n Vos stats ont été diminuées")
                         game_window.after(2000,update_fight)
                 else:
-                    player_anim.stop_update()
+                    player_anim.stop_anim()
                     player_anim.label.destroy()
                     player_anim.path = None
                     dialogue_box.config(text="Vous avez perdu !!")
 
             elif not bot.is_alive():
-                bot_anim.stop_update()
+                bot_anim.stop_anim()
                 bot_anim.label.destroy()
                 bot_anim.path = None
                 continue_button.place(relx=0.71,rely=0.91)
@@ -302,6 +301,7 @@ def game_menu():#C'est juste un 1er test
             label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
             speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
         player_anim.update(0)
+        anim_lst.append(player_anim)
 
         bot = create_mob(biome)
         mob_label = Label(game_window, bg = "black")
@@ -309,6 +309,7 @@ def game_menu():#C'est juste un 1er test
             label = mob_label, root=game_window, path=f"{bot.classe}/{bot.current_anim}.gif",
             speed=infos_anim[bot.classe][bot.current_anim]["speed"],repeat=-1, zoom=infos_anim[bot.classe][bot.current_anim]["zoom"])
         bot_anim.update(0)
+        anim_lst.append(bot_anim)
 
         heal_button =  Button(bg_canvas, text="Se soigner", bg="white", font=('Arial', 30),fg="black", command=heal_player, state=DISABLED)
         widget_lst.append(heal_button)
@@ -317,7 +318,7 @@ def game_menu():#C'est juste un 1er test
         do_not_attack_button.place(relx = 0.75, rely=0.91)
         widget_lst.append(do_not_attack_button)
 
-        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction(delete_anim,next_event(biome,nb_events)))
+        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)))
         widget_lst.append(continue_button)
     
         quit_menu = Button(bg_canvas, text="QUITTER", command= game_window.destroy)
@@ -329,7 +330,7 @@ def game_menu():#C'est juste un 1er test
         anim_lst.append(bot_anim)
         game_window.mainloop()
 
-    def agressive_fight(biome,nb_events = nb_events):
+    def agressive_fight(biome,nb_events ):
         nb_events-=1
         bg = PhotoImage(file = f"{biome}{bg_nb}.png")
         
@@ -364,18 +365,10 @@ def game_menu():#C'est juste un 1er test
             game_window.after(infos_anim[player_class][player.current_anim]["max_frame"]*infos_anim[player_class][player.current_anim]["speed"],set_anim)
             check_end_fight()
             game_window.after(1500,update_fight)
-       
-        def delete_anim():
-            player_anim.stop_update()
-            player_anim.label.destroy()
-            player_anim.path = None
-            bot_anim.stop_update()
-            bot_anim.label.destroy()
-            bot_anim.path = None
 
         def idle_anim(x,y,perso,object1,repeat = 1):
             perso.current_anim = "idle"
-            object1.stop_update()
+            object1.stop_anim()
             object = AnimatedGif(x=x,y=y,max_frame =infos_anim[perso.classe][perso.current_anim]["max_frame"],
                 label = Label(game_window, bg = "black"), root=game_window, path=f"{perso.classe}/{perso.current_anim}.gif",
                 speed=infos_anim[perso.classe][perso.current_anim]["speed"],repeat=repeat, zoom=infos_anim[perso.classe][perso.current_anim]["zoom"])
@@ -403,29 +396,23 @@ def game_menu():#C'est juste un 1er test
 
         def check_end_fight():
             if not player.is_alive():
-                player_anim.stop_update()
-                player_anim.label.destroy()
-                player_anim.path = None
-                if player_class == "skeleton":
-                    if player.reanimations > 0:
-                        player.reanimations-=1
-                        player_label = Label(game_window, bg = "black")
-                        player_anim =AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
-                            label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
-                            speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
-                        widget_lst.append(player_label)
-                        player_anim.update(0)
-
-                        player.revive()
-                        dialogue_box.config(text = "Vous avez été réssucité ! \n Vos stats ont été diminuées")
-                        game_window.after(2000,update_fight)
+                if player_class == "skeleton" and player.reanimations > 0:
+                    player.reanimations-=1
+                    player_label = Label(game_window, bg = "black")
+                    player_anim =AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
+                        label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
+                        speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
+                    widget_lst.append(player_label)
+                    player_anim.update(0)
+                    player.revive()
+                    dialogue_box.config(text = "Vous avez été réssucité ! \n Vos stats ont été diminuées")
+                    game_window.after(2000,update_fight)
                 else:
                     dialogue_box.config(text="Vous avez perdu !!")
 
+
             elif not bot.is_alive():
-                bot_anim.stop_update()
-                bot_anim.label.destroy()
-                bot_anim.path = None
+                bot_anim.stop_anim()
                 continue_button.place(relx=0.71,rely=0.91)
                 dialogue_box.config(text="Continuons notre chemin !")
 
@@ -469,10 +456,11 @@ def game_menu():#C'est juste un 1er test
 
         player_label = Label(game_window, bg = "black")
         player_anim =AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
-        label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
-        speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
+            label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
+            speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
         widget_lst.append(player_label)
         player_anim.update(0)
+        anim_lst.append(player_anim)
 
         bot = create_mob(biome)
         mob_label = Label(game_window, bg = "black")
@@ -480,12 +468,13 @@ def game_menu():#C'est juste un 1er test
             label = mob_label, root=game_window, path=f"{bot.classe}/{bot.current_anim}.gif",
             speed=infos_anim[bot.classe][bot.current_anim]["speed"],repeat=-1, zoom=infos_anim[bot.classe][bot.current_anim]["zoom"])
         bot_anim.update(0)
+        anim_lst.append(bot_anim)
 
         heal_button =  Button(bg_canvas, text="Se soigner", bg="white", font=('Arial', 30),fg="black", command=heal_player, state=DISABLED)
         heal_button.place(relx = 0.445, rely=0.91)
         widget_lst.append(heal_button)
 
-        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction( delete_anim, next_event(biome,nb_events)))
+        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction( destroy_anim, next_event(biome,nb_events)))
         widget_lst.append(continue_button)
 
         quit_button = Button(bg_canvas, text="QUITTER", command= game_window.destroy)
@@ -499,16 +488,13 @@ def game_menu():#C'est juste un 1er test
         update_fight(True)
         game_window.mainloop()
 
-    def potion(biome,nb_events = nb_events):
+    def potion(biome,nb_events ):
         def get_potion():
             player.pot_nb+=1
             get_button.config(state=DISABLED)
             continue_button.config(state=ACTIVE)
             dialogue_box.config(text=f"Nous avons récupéré une potion ! \n Nous en avons {player.pot_nb}")
             potion_label.destroy()
-
-        def delete_anim():
-            player_anim.label.destroy()
 
         nb_events-=1
         bg = PhotoImage(file = f"{biome}{bg_nb}.png")
@@ -536,12 +522,13 @@ def game_menu():#C'est juste un 1er test
         player_label = Label(game_window, bg = "black")
 
         player_anim = AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
-        label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
-        speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
+            label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
+            speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
         player_anim.update(0)
+        anim_lst.append(player_anim)
 
         #bot = create_mob(biome)
-        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction(delete_anim,next_event(biome,nb_events)), state=DISABLED)
+        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)), state=DISABLED)
         continue_button.place(relx = 0.75, rely=0.91) 
         widget_lst.append(continue_button)
 
@@ -574,8 +561,8 @@ def game_menu():#C'est juste un 1er test
         if direction2 == "forest":
             text_dir2 = "la forêt"
 
-        left_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir1}", command=lambda:next_event(direction1))
-        right_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir2}", command=lambda:next_event(direction2))
+        left_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir1}", command=lambda:next_event(direction1, randint(1,5)))
+        right_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir2}", command=lambda: next_event(direction2, randint(1,5)))
         
         dialogue_box = Label(game_window, highlightthickness=2, bd= 2, text=direction_text, font=("Helvetica",14), width = int(width/10), height=int(height/70), relief=SOLID)
         dialogue_box.place(relx=0.1, rely=0.63)

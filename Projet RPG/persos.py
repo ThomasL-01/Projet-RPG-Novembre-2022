@@ -181,9 +181,9 @@ class AnimatedGif():
             self.label.configure(image=frame)
             self.root.after(self.speed, self.update, ind)
             self.label.place(relx=self.x,rely=self.y)
-        else:
-            self.frames = None
 
-    def stop_update(self):
+
+    def stop_anim(self):
         self.updating = False
+        self.label.config(image = "")
 
