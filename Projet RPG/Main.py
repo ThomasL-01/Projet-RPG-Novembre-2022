@@ -27,7 +27,7 @@ def destroy_anim():
 def create_window():
     window = Tk()
     window.title("RPG")
-    window.geometry("1440x793")
+    window.geometry("1000x600")
     window.configure(background='black')
     window.minsize(500,500)
     width = window.winfo_screenwidth()
@@ -148,8 +148,8 @@ def class_choice_menu():
     window.mainloop()
 
 def create_dialogue_box(root, width, height):
-    dialogue_box = Label(root, highlightthickness=2, bd= 2,font=("Helvetica", 25) ,width = int(width/20), height=int(height/126), relief=SOLID)
-    dialogue_box.place(relx=0.15, rely=0.63)
+    dialogue_box = Label(root, highlightthickness=2, bd= 2,font=("Helvetica", 25) ,width = int(width/25), height=int(height/180), relief=SOLID)
+    dialogue_box.place(relx=0.1, rely=0.65)
     return dialogue_box
 
 #Menu de fight
@@ -191,7 +191,7 @@ def game_menu():#C'est juste un 1er test
         def start_attack():
             dialogue_box.config(text="A l'attaque !\nC'est à vous de jouer")
             attack_button.config(command=player_attack)
-            heal_button.place(relx = 0.445, rely=0.91)
+            heal_button.place(relx = 0.475, rely=0.91)
             heal_button.config(state=ACTIVE)
             do_not_attack_button.destroy()
 
@@ -204,18 +204,19 @@ def game_menu():#C'est juste un 1er test
 
             #play anim
             player.current_anim = "attack"
-            player_anim = AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player.classe][player.current_anim]["max_frame"],
+            player_anim = AnimatedGif(x=0.6,y=0.45,max_frame =infos_anim[player.classe][player.current_anim]["max_frame"],
                 label = Label(game_window, bg = "black"), root=game_window, path=f"{player.classe}/{player.current_anim}.gif",
                 speed=infos_anim[player.classe][player.current_anim]["speed"],repeat=1, zoom=infos_anim[player.classe][player.current_anim]["zoom"])
             player_anim.update(0)
 
             def set_anim():
                 player.current_anim = "idle"
-                idle_anim(0.6,0.47,player,player_anim,-1)
+                idle_anim(0.6,0.45,player,player_anim,-1)
+                check_end_fight()
 
             #a la fin de l'anim, passe l'anim en idle
             game_window.after(infos_anim[player_class][player.current_anim]["max_frame"]*infos_anim[player_class][player.current_anim]["speed"],set_anim)
-            check_end_fight()
+            
             game_window.after(1500,update_fight)
 
         def idle_anim(x,y,perso,object1,repeat):
@@ -233,7 +234,7 @@ def game_menu():#C'est juste un 1er test
 
             #play anim
             bot.current_anim = "attack"
-            bot_anim = AnimatedGif(x=0.4,y=0.45,max_frame =infos_anim[bot.classe][bot.current_anim]["max_frame"],
+            bot_anim = AnimatedGif(x=0.4,y=0.43,max_frame =infos_anim[bot.classe][bot.current_anim]["max_frame"],
                 label = Label(game_window, bg = "black"), root=game_window, path=f"{bot.classe}/{bot.current_anim}.gif",
                 speed=infos_anim[bot.classe][bot.current_anim]["speed"],repeat=1, zoom=infos_anim[bot.classe][bot.current_anim]["zoom"])
             bot_anim.update(0)
@@ -241,9 +242,9 @@ def game_menu():#C'est juste un 1er test
             def set_anim():
                 bot.current_anim = "idle"
                 idle_anim(0.4,0.45,bot,bot_anim,-1)
+                check_end_fight()
 
             game_window.after(infos_anim[bot.classe][bot.current_anim]["max_frame"]*infos_anim[bot.classe][bot.current_anim]["speed"],set_anim)
-            check_end_fight()
             game_window.after(1500,update_fight)
             
         def check_end_fight():
@@ -259,12 +260,11 @@ def game_menu():#C'est juste un 1er test
                     player_anim.label.destroy()
                     player_anim.path = None
                     dialogue_box.config(text="Vous avez perdu !!")
-
             elif not bot.is_alive():
                 bot_anim.stop_anim()
                 bot_anim.label.destroy()
                 bot_anim.path = None
-                continue_button.place(relx=0.76,rely=0.91)
+                continue_button.place(relx=0.81,rely=0.91)
                 dialogue_box.config(text="Continuons notre chemin !")
 
         def update_fight():
@@ -294,14 +294,14 @@ def game_menu():#C'est juste un 1er test
                 dialogue_box.config(text=f"Vous vous êtes soigné ! Il vous reste {player.pot_nb} potion(s) \n Vous avez {player.pv} PV")
                 game_window.after(1500,update_fight)
         
-        attack_button = Button(bg_canvas, text="Attaquer", bg="white", font=('Arial', 30),fg="black", command=start_attack, state=ACTIVE)
-        attack_button.place(relx = 0.15, rely=0.91)
+        attack_button = Button(bg_canvas, text="Attaquer", bg="white", font=('Arial', 20),fg="black", command=start_attack, state=ACTIVE)
+        attack_button.place(relx = 0.1, rely=0.907)
         widget_lst.append(attack_button)
 
         dialogue_box.config(text="Un ennemi! Il ne semble pas nous attaquer, que faire ?")
 
         player_label = Label(game_window, bg = "black")
-        player_anim = AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
+        player_anim = AnimatedGif(x=0.6,y=0.45,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
             label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
             speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
         player_anim.update(0)
@@ -309,20 +309,20 @@ def game_menu():#C'est juste un 1er test
 
         bot = create_mob(biome)
         mob_label = Label(game_window, bg = "black")
-        bot_anim =AnimatedGif(x=0.4,y=0.45,max_frame =infos_anim[bot.classe][bot.current_anim]["max_frame"],
+        bot_anim = AnimatedGif(x=0.4,y=0.43,max_frame =infos_anim[bot.classe][bot.current_anim]["max_frame"],
             label = mob_label, root=game_window, path=f"{bot.classe}/{bot.current_anim}.gif",
             speed=infos_anim[bot.classe][bot.current_anim]["speed"],repeat=-1, zoom=infos_anim[bot.classe][bot.current_anim]["zoom"])
         bot_anim.update(0)
         anim_lst.append(bot_anim)
 
-        heal_button =  Button(bg_canvas, text="Se soigner", bg="white", font=('Arial', 30),fg="black", command=heal_player, state=DISABLED)
+        heal_button =  Button(bg_canvas, text="Se soigner", bg="white", font=('Arial', 20),fg="black", command=heal_player, state=DISABLED)
         widget_lst.append(heal_button)
 
-        do_not_attack_button = Button(bg_canvas, text="Ne pas attaquer", bg="white", font=('Arial', 30),fg="black", command=lambda:next_event(biome,nb_events), state=ACTIVE)
-        do_not_attack_button.place(relx = 0.704, rely=0.91)
+        do_not_attack_button = Button(bg_canvas, text="Ne pas attaquer", bg="white", font=('Arial', 20),fg="black", command=lambda:next_event(biome,nb_events), state=ACTIVE)
+        do_not_attack_button.place(relx = 0.75, rely=0.912)
         widget_lst.append(do_not_attack_button)
 
-        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)))
+        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 20),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)))
         widget_lst.append(continue_button)
     
         quit_menu = Button(bg_canvas, text="QUITTER", command= game_window.destroy)
@@ -355,7 +355,7 @@ def game_menu():#C'est juste un 1er test
 
             #play anim
             player.current_anim = "attack"
-            player_anim = AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player.classe][player.current_anim]["max_frame"],
+            player_anim = AnimatedGif(x=0.6,y=0.45,max_frame =infos_anim[player.classe][player.current_anim]["max_frame"],
                 label = Label(game_window, bg = "black"), root=game_window, path=f"{player.classe}/{player.current_anim}.gif",
                 speed=infos_anim[player.classe][player.current_anim]["speed"],repeat=1, zoom=infos_anim[player.classe][player.current_anim]["zoom"])
             
@@ -363,10 +363,10 @@ def game_menu():#C'est juste un 1er test
 
             def set_anim():
                 player.current_anim = "idle"
-                idle_anim(0.6,0.47,player,player_anim,-1)
+                idle_anim(0.6,0.45,player,player_anim,-1)
+                check_end_fight()
 
             game_window.after(infos_anim[player_class][player.current_anim]["max_frame"]*infos_anim[player_class][player.current_anim]["speed"],set_anim)
-            check_end_fight()
             game_window.after(1500,update_fight)
 
         def idle_anim(x,y,perso,object1,repeat = 1):
@@ -384,39 +384,34 @@ def game_menu():#C'est juste un 1er test
 
             #play anim
             bot.current_anim = "attack"
-            bot_anim = AnimatedGif(x=0.4,y=0.45,max_frame =infos_anim[bot.classe][bot.current_anim]["max_frame"],
+            bot_anim = AnimatedGif(x=0.4,y=0.43,max_frame =infos_anim[bot.classe][bot.current_anim]["max_frame"],
                 label = Label(game_window, bg = "black"), root=game_window, path=f"{bot.classe}/{bot.current_anim}.gif",
                 speed=infos_anim[bot.classe][bot.current_anim]["speed"],repeat=1, zoom=infos_anim[bot.classe][bot.current_anim]["zoom"])
             bot_anim.update(0)
 
             def set_anim():
                 bot.current_anim = "idle"
-                idle_anim(0.4,0.45,bot,bot_anim,-1)
+                idle_anim(0.4,0.43,bot,bot_anim,-1)
+                check_end_fight()
 
             game_window.after(infos_anim[bot.classe][bot.current_anim]["max_frame"]*infos_anim[bot.classe][bot.current_anim]["speed"],set_anim)
-            check_end_fight()
             game_window.after(1500,update_fight)
 
         def check_end_fight():
             if not player.is_alive():
                 if player_class == "skeleton" and player.reanimations > 0:
                     player.reanimations-=1
-                    player_label = Label(game_window, bg = "black")
-                    player_anim =AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
-                        label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
-                        speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
-                    widget_lst.append(player_label)
-                    player_anim.update(0)
                     player.revive()
                     dialogue_box.config(text = "Vous avez été réssucité ! \n Vos stats ont été diminuées")
                     game_window.after(2000,update_fight)
                 else:
                     dialogue_box.config(text="Vous avez perdu !!")
-
-
+                    player_anim.stop_anim()
+                    player_anim.label.destroy()
             elif not bot.is_alive():
                 bot_anim.stop_anim()
-                continue_button.place(relx=0.76,rely=0.91)
+                bot_anim.label.destroy()
+                continue_button.place(relx=0.81,rely=0.91)
                 dialogue_box.config(text="Continuons notre chemin !")
 
         def update_fight(first_attack=False):
@@ -453,12 +448,12 @@ def game_menu():#C'est juste un 1er test
                 dialogue_box.config(text=f"Vous vous êtes soigné ! Il vous reste {player.pot_nb} potion(s) \n Vous avez {player.pv} PV")
                 game_window.after(1500,update_fight)
         
-        attack_button = Button(bg_canvas, text="Attaquer", bg="white", font=('Arial', 30),fg="black", command=player_attack, state=DISABLED)
-        attack_button.place(relx = 0.15, rely=0.91)
+        attack_button = Button(bg_canvas, text="Attaquer", bg="white", font=('Arial', 20),fg="black", command=player_attack, state=DISABLED)
+        attack_button.place(relx = 0.1, rely=0.907)
         widget_lst.append(attack_button)
 
         player_label = Label(game_window, bg = "black")
-        player_anim =AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
+        player_anim =AnimatedGif(x=0.6,y=0.45,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
             label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
             speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
         widget_lst.append(player_label)
@@ -467,17 +462,17 @@ def game_menu():#C'est juste un 1er test
 
         bot = create_mob(biome)
         mob_label = Label(game_window, bg = "black")
-        bot_anim = AnimatedGif(x=0.4,y=0.45,max_frame =infos_anim[bot.classe][bot.current_anim]["max_frame"],
+        bot_anim = AnimatedGif(x=0.4,y=0.43,max_frame =infos_anim[bot.classe][bot.current_anim]["max_frame"],
             label = mob_label, root=game_window, path=f"{bot.classe}/{bot.current_anim}.gif",
             speed=infos_anim[bot.classe][bot.current_anim]["speed"],repeat=-1, zoom=infos_anim[bot.classe][bot.current_anim]["zoom"])
         bot_anim.update(0)
         anim_lst.append(bot_anim)
 
-        heal_button =  Button(bg_canvas, text="Se soigner", bg="white", font=('Arial', 30),fg="black", command=heal_player, state=DISABLED)
-        heal_button.place(relx = 0.445, rely=0.91)
+        heal_button =  Button(bg_canvas, text="Se soigner", bg="white", font=('Arial', 20),fg="black", command=heal_player, state=DISABLED)
+        heal_button.place(relx = 0.447, rely=0.91)
         widget_lst.append(heal_button)
 
-        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction( destroy_anim, next_event(biome,nb_events)))
+        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 20),fg="black", command=lambda:double_fonction( destroy_anim, next_event(biome,nb_events)))
         widget_lst.append(continue_button)
 
         quit_button = Button(bg_canvas, text="QUITTER", command= game_window.destroy)
@@ -517,21 +512,21 @@ def game_menu():#C'est juste un 1er test
 
         dialogue_box.config(text=potion_text)
 
-        get_button = Button(bg_canvas, text="Récupérer", bg="white", font=('Arial', 30),fg="black", command=get_potion, state=ACTIVE)
-        get_button.place(relx = 0.15, rely=0.91)
+        get_button = Button(bg_canvas, text="Récupérer", bg="white", font=('Arial', 20),fg="black", command=get_potion, state=ACTIVE)
+        get_button.place(relx = 0.1, rely=0.91)
         widget_lst.append(get_button)
 
         player_label = Label(game_window, bg = "black")
 
-        player_anim = AnimatedGif(x=0.6,y=0.47,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
+        player_anim = AnimatedGif(x=0.6,y=0.45,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
             label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
             speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
         player_anim.update(0)
         anim_lst.append(player_anim)
 
         #bot = create_mob(biome)
-        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)), state=DISABLED)
-        continue_button.place(relx = 0.76, rely=0.91) 
+        continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 20),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)), state=DISABLED)
+        continue_button.place(relx = 0.8, rely=0.91) 
         widget_lst.append(continue_button)
 
 
@@ -572,7 +567,7 @@ def game_menu():#C'est juste un 1er test
 
         left_dir.place(relx=0.04, rely=0.4)
         widget_lst.append(left_dir)
-        right_dir.place(relx=0.8, rely=0.4)
+        right_dir.place(relx=0.71, rely=0.4)
         widget_lst.append(right_dir)
 
         widget_lst.append(quit_button)
