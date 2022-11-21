@@ -14,11 +14,13 @@ def double_fonction(*funcs):
             f(*fonct1, **fonct2)
     return double_fonction
 
+#permet de détruire tout les widgets de la liste
 def destroy_widgets():
     for widget in widget_lst:
         widget.destroy()
     widget_lst.clear()
 
+#idem pour les animations (si ça marche)
 def destroy_anim():
     for anim in anim_lst:
         anim.stop_anim()
@@ -147,6 +149,7 @@ def class_choice_menu():
 
     window.mainloop()
 
+#Créer une boite de dialogue
 def create_dialogue_box(root, width, height):
     dialogue_box = Label(root, highlightthickness=2, bd= 2,font=("Helvetica", 25) ,width = int(width/25), height=int(height/180), relief=SOLID)
     dialogue_box.place(relx=0.1, rely=0.65)
@@ -158,10 +161,10 @@ def game_menu():#C'est juste un 1er test
     bg_nb = randint(1,2) #choix entre bg 1 et 2
     game_window , width, height= create_window()
 
-
+    #fonction permettant l'enchainement des events
     def  next_event(biome,nb_events):
         if nb_events > 0:
-            event = choice(lst_event)
+            event = choice(lst_event) #choisis pasrmis la liste
             if event == "passive_mob":
                 destroy_widgets()
                 passive_fight(biome,nb_events)
@@ -174,10 +177,12 @@ def game_menu():#C'est juste un 1er test
                 destroy_widgets()
                 potion(biome,nb_events)
     
+        #retour au choix de la direction (biome)
         elif nb_events == 0:
             destroy_widgets()
             direction_menu()
     
+    #dans le cas d'un passive fight (le bot n'attaque pas)
     def passive_fight(biome,nb_events):
         nb_events-=1
         bg = PhotoImage(file = f"{biome}{bg_nb}.png")
@@ -188,6 +193,8 @@ def game_menu():#C'est juste un 1er test
         bg_canvas.create_image(0,0,anchor=NW, image= bg)
 
         dialogue_box = create_dialogue_box(bg_canvas, width, height)
+
+        #si joueur souhaite attaquer
         def start_attack():
             dialogue_box.config(text="A l'attaque !\nC'est à vous de jouer")
             attack_button.config(command=player_attack)
@@ -195,6 +202,7 @@ def game_menu():#C'est juste un 1er test
             heal_button.config(state=ACTIVE)
             do_not_attack_button.destroy()
 
+        #fonction de combat du joueur
         def player_attack():
             text = player.attack(bot)
             dialogue_box.config(text=text)
@@ -219,6 +227,7 @@ def game_menu():#C'est juste un 1er test
             
             game_window.after(1500,update_fight)
 
+        #pour recreer l'anim idle à la fin de l'attaque
         def idle_anim(x,y,perso,object1,repeat):
             perso.current_anim = "idle"
             object1.stop_anim() #arrete l'anim attack
@@ -227,6 +236,7 @@ def game_menu():#C'est juste un 1er test
                 speed=infos_anim[perso.classe][perso.current_anim]["speed"],repeat=repeat, zoom=infos_anim[perso.classe][perso.current_anim]["zoom"])
             object.update(0)    #lance l'anim idle
 
+        #Idem bot
         def bot_attack():
             text = bot.attack(player)
             dialogue_box.config(text=text)
@@ -247,9 +257,10 @@ def game_menu():#C'est juste un 1er test
             game_window.after(infos_anim[bot.classe][bot.current_anim]["max_frame"]*infos_anim[bot.classe][bot.current_anim]["speed"],set_anim)
             game_window.after(1500,update_fight)
             
+        #verifie si le fight est fini (check la vie des persos)
         def check_end_fight():
             if not player.is_alive():
-                if player_class == "skeleton":
+                if player_class == "skeleton": #dans le cas où le player peut se faire réanimer 
                     if player.reanimations > 0:
                         player.reanimations-=1
                         player.revive()
@@ -267,6 +278,7 @@ def game_menu():#C'est juste un 1er test
                 continue_button.place(relx=0.81,rely=0.91)
                 dialogue_box.config(text="Continuons notre chemin !")
 
+        #fonction du tour par tour
         def update_fight():
             player.current_speed += player.speed
             bot.current_speed+=bot.speed
@@ -281,6 +293,7 @@ def game_menu():#C'est juste un 1er test
             elif bot.is_alive() and player.is_alive():
                 game_window.after(0,update_fight)
         
+        #permet de heal le player
         def heal_player():
             player.current_speed=0
             if player.pot_nb == 0:
@@ -294,12 +307,14 @@ def game_menu():#C'est juste un 1er test
                 dialogue_box.config(text=f"Vous vous êtes soigné ! Il vous reste {player.pot_nb} potion(s) \n Vous avez {player.pv} PV")
                 game_window.after(1500,update_fight)
         
+        #creation du bouton d'attaque
         attack_button = Button(bg_canvas, text="Attaquer", bg="white", font=('Arial', 20),fg="black", command=start_attack, state=ACTIVE)
         attack_button.place(relx = 0.1, rely=0.907)
         widget_lst.append(attack_button)
 
         dialogue_box.config(text="Un ennemi! Il ne semble pas nous attaquer, que faire ?")
 
+        #creation de l'anim player
         player_label = Label(game_window, bg = "black")
         player_anim = AnimatedGif(x=0.6,y=0.45,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
             label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
@@ -307,6 +322,7 @@ def game_menu():#C'est juste un 1er test
         player_anim.update(0)
         anim_lst.append(player_anim)
 
+        #idem  pour le bot
         bot = create_mob(biome)
         mob_label = Label(game_window, bg = "black")
         bot_anim = AnimatedGif(x=0.4,y=0.43,max_frame =infos_anim[bot.classe][bot.current_anim]["max_frame"],
@@ -315,18 +331,23 @@ def game_menu():#C'est juste un 1er test
         bot_anim.update(0)
         anim_lst.append(bot_anim)
 
+        #bouton de heal
         heal_button =  Button(bg_canvas, text="Se soigner", bg="white", font=('Arial', 20),fg="black", command=heal_player, state=DISABLED)
         widget_lst.append(heal_button)
 
-        do_not_attack_button = Button(bg_canvas, text="Ne pas attaquer", bg="white", font=('Arial', 20),fg="black", command=lambda:next_event(biome,nb_events), state=ACTIVE)
+        #bouton pour passer à la suite si le joueur ne veut pas attaquer
+        do_not_attack_button = Button(bg_canvas, text="Ne pas attaquer", bg="white", font=('Arial', 20),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)), state=ACTIVE)
         do_not_attack_button.place(relx = 0.75, rely=0.912)
         widget_lst.append(do_not_attack_button)
 
+        #bouton pour passer à la suite quand le joueur à finit le combat
         continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 20),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)))
         widget_lst.append(continue_button)
     
+        #bouton pour quitter
         quit_menu = Button(bg_canvas, text="QUITTER", command= game_window.destroy)
         quit_menu.pack(side = BOTTOM, fill=X)
+
         widget_lst.append(quit_menu)
         widget_lst.append(dialogue_box)
         widget_lst.append(bg_canvas)
@@ -334,6 +355,7 @@ def game_menu():#C'est juste un 1er test
         anim_lst.append(bot_anim)
         game_window.mainloop()
 
+    #C'est sensiblement la même chose dans cette fonction, sauf que le bot attaque directement
     def agressive_fight(biome,nb_events ):
         nb_events-=1
         bg = PhotoImage(file = f"{biome}{bg_nb}.png")
@@ -344,7 +366,6 @@ def game_menu():#C'est juste un 1er test
         bg_canvas.create_image(0,0,anchor=NW, image= bg)
 
         dialogue_box = create_dialogue_box(bg_canvas, width, height)
-
 
         def player_attack():
             text = player.attack(bot)
@@ -477,6 +498,7 @@ def game_menu():#C'est juste un 1er test
 
         quit_button = Button(bg_canvas, text="QUITTER", command= game_window.destroy)
         quit_button.pack(side = BOTTOM, fill=X)
+
         widget_lst.append(quit_button)
         widget_lst.append(dialogue_box)
         widget_lst.append(bg_canvas)
@@ -486,7 +508,9 @@ def game_menu():#C'est juste un 1er test
         update_fight(True)
         game_window.mainloop()
 
+    #dans le cas où le joueur trouve une potion
     def potion(biome,nb_events ):
+        #fonction pour récupérer la potion 
         def get_potion():
             player.pot_nb+=1
             get_button.config(state=DISABLED)
@@ -505,6 +529,7 @@ def game_menu():#C'est juste un 1er test
         dialogue_box = create_dialogue_box(bg_canvas, width, height)
         widget_lst.append(dialogue_box)
 
+        #image de la potion
         potion_img = PhotoImage(file="potion.png").subsample(2)
         potion_label = Label(game_window, bg = "black", image=potion_img)
         potion_label.place(relx=0.34,rely=0.45)
@@ -512,36 +537,40 @@ def game_menu():#C'est juste un 1er test
 
         dialogue_box.config(text=potion_text)
 
+        #bouton pour récupérer la potion
         get_button = Button(bg_canvas, text="Récupérer", bg="white", font=('Arial', 20),fg="black", command=get_potion, state=ACTIVE)
         get_button.place(relx = 0.1, rely=0.91)
         widget_lst.append(get_button)
 
+        #animation du joueur
         player_label = Label(game_window, bg = "black")
-
         player_anim = AnimatedGif(x=0.6,y=0.45,max_frame =infos_anim[player_class][player.current_anim]["max_frame"],
             label = player_label, root=game_window, path=f"{player_class}/{player.current_anim}.gif",
             speed=infos_anim[player_class][player.current_anim]["speed"],repeat=-1, zoom=infos_anim[player_class][player.current_anim]["zoom"])
         player_anim.update(0)
         anim_lst.append(player_anim)
 
-        #bot = create_mob(biome)
+        #bouton pour passer à la suite
         continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 20),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)), state=DISABLED)
         continue_button.place(relx = 0.8, rely=0.91) 
         widget_lst.append(continue_button)
 
-
+        #bouton pour quitter
         btn_menu = Button(bg_canvas, text="QUITTER", command= game_window.destroy)
         btn_menu.pack(side = BOTTOM, fill=X)
+        
         widget_lst.append(btn_menu)
         widget_lst.append(bg_canvas)
         anim_lst.append(player_anim)
         game_window.mainloop()
 
+    #menu choix de direction (biome)
     def direction_menu():
-
+        #bouton pour quitter
         quit_button = Button(game_window, text="QUITTER", bg="white", fg="black", command=game_window.destroy)
         quit_button.pack(side = BOTTOM, fill=X)
 
+        #choisis aléatoirement des directions parmis les 3 et leurs probas de les rencontrer
         direction1 = choose_direction(None) #direction gauche
         direction2 = choose_direction(direction1) #direction droite
 
@@ -558,6 +587,7 @@ def game_menu():#C'est juste un 1er test
         if direction2 == "forest":
             text_dir2 = "la forêt"
 
+        #creation bouton pour aller à droite et à gauche
         left_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir1}",font=("Helvetica",20), command=lambda:next_event(direction1, randint(1,5)))
         right_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir2}",font=("Helvetica", 20), command=lambda: next_event(direction2, randint(1,5)))
         

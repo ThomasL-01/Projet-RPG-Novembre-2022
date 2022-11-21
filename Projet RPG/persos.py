@@ -5,11 +5,13 @@ need_dir_menu = False
 potion_heal = 50
 dialogue_box_text = ""
 
+#creation classe personnage parent 
 class Personnage:
     def __init__(self,classe):
         self.classe = classe
         self.current_anim = "idle"
 
+#creation classe player
 class Player(Personnage):
     def __init__(self, classe,name):
         super().__init__(classe)
@@ -22,12 +24,11 @@ class Player(Personnage):
         self.crit = classes[classe]["crit"]    #proba de coup critique
         self.name = name
         self.pot_nb = 1
-        if self.classe == "skeleton":
-            self.reanimations = 5
-        elif self.classe == "ninja":
-            #attaque bonus max degats si c le joueur qui attaque (pas si c un bot qui démarre le fight)
-            pass
 
+        if self.classe == "skeleton": #si classe = skeleton alors on lui donne des réanimations
+            self.reanimations = 5
+
+    #test si le joueur est en vie
     def is_alive(self):
         if self.pv <=0:
             is_alive = False
@@ -46,16 +47,18 @@ class Player(Personnage):
             
         else:
             if is_enemy_dodging <= persob.dodge:
-                #L'ennemi esquive l'attaque, mettre un texte dans la boite de dialogue
+                #L'ennemi esquive l'attaque
                 dialogue_box_text = "L'adversaire à esquivé votre attaque"
 
             else:
+                #on met des dégats à l'adversaire
                 persob.pv -= self.attack_damages
                 dialogue_box_text = f"Vous attaquez l'ennemi -{self.attack_damages} PV pour l'adversaire! \n il a {persob.pv} PV et vous en avez {self.pv}"
-        if persob.pv <=0:
+        if persob.pv <=0:#dans le cas ou on vainc l'ennemi
             dialogue_box_text = "Vous avez vaincu l'ennemi"
         return dialogue_box_text
 
+    #si on a besoin de revive le player (avec des stats qui baissent)
     def revive(self):
         if self.reanimations > 0:
             self.max_health -= 0.1 * self.max_health
@@ -67,6 +70,7 @@ class Player(Personnage):
         else:
             pass
 
+    #pour heal le player
     def heal(self):
         self.pot_nb -=1
         if self.pv +potion_heal > self.max_health:
@@ -74,6 +78,7 @@ class Player(Personnage):
         else:
             self.pv += potion_heal
 
+#classe bot 
 class Bot(Personnage):
     def __init__(self, classe):
         super().__init__(classe)
@@ -85,6 +90,7 @@ class Bot(Personnage):
         self.dodge = classes[classe]["dodge"] #proba d'esquive
         self.crit = classes[classe]["crit"]    #proba de coup critique
 
+    #idem
     def is_alive(self):
         if self.pv <=0:
             is_alive = False
@@ -92,6 +98,7 @@ class Bot(Personnage):
             is_alive = True
         return is_alive
 
+    #idem
     def attack(self,persob): #attaque du bot
         global dialogue_box_text
         #L'ennemi ne peut pas esquiver un crit
@@ -126,7 +133,7 @@ def choose_direction(direction1): #calcule la proba de pouvoir aller dans certai
             direction = "forest"
             return direction 
     
-def create_mob(biome):
+def create_mob(biome): #creer un mob en fonction de sa proba de spawn dans le biome en question
     """agressive: True = agressif, False = passif"""
     classe_mob = randint(1,100)
 
@@ -154,7 +161,7 @@ def create_mob(biome):
 
     return Bot(classe_mob)
 
-
+#classe gif animé
 class AnimatedGif():
     def __init__(self,x, y, max_frame, path:str, label, root, zoom = 1, speed = 100, repeat = 1):
         self.x = x
@@ -169,6 +176,7 @@ class AnimatedGif():
         self.frames = [PhotoImage(file=path,format = 'gif -index %i' %(i)).zoom(zoom) for i in range(max_frame)]
         self.updating = True
 
+    #permet l'update du gif au nb max de frame du gif
     def update(self, ind):
         if self.updating and self.path !=None:
             if ind+1 <= self.max_frame: #si indice + petit que max frame alors update la frame
@@ -183,7 +191,7 @@ class AnimatedGif():
             self.label.place(relx=self.x,rely=self.y)
 
 
-    def stop_anim(self):
+    def stop_anim(self): # arrète l'animation (normalement) 
         self.updating = False
         self.label.config(image = "")
 
