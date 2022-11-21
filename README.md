@@ -1,4 +1,5 @@
 # Projet-RPG-Novembre-2022
+### Raïzza Romano, Matteo Le Goff William Smith et Thomas Loureiro 
 Un jeu de RPG où on choisit une classe avec différents attributs
 
 ## Infos:
