@@ -6,4 +6,5 @@ Un jeu de RPG où on choisit une classe avec différents attributs
 - Il n'y a pas de fin au jeu(en tout cas pas jusqu'à la mort du joueur)
 
 ### Quelques Bugs:
--Certaines fois les animations ne disparaissent pas, on peut passer à la suite lorsque "Continuons notre chemin s'affiche"
+-Certaines fois les animations ne disparaissent pas, on peut passer à la suite lorsque "Continuons notre chemin!" s'affiche
+
