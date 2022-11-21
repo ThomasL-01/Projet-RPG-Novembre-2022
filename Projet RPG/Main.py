@@ -147,6 +147,11 @@ def class_choice_menu():
 
     window.mainloop()
 
+def create_dialogue_box(root, width, height):
+    dialogue_box = Label(root, highlightthickness=2, bd= 2,font=("Helvetica", 25) ,width = int(width/20), height=int(height/126), relief=SOLID)
+    dialogue_box.place(relx=0.15, rely=0.63)
+    return dialogue_box
+
 #Menu de fight
 def game_menu():#C'est juste un 1er test
     player = Player(player_class, player_pseudo)
@@ -182,8 +187,7 @@ def game_menu():#C'est juste un 1er test
         bg_canvas.pack(expand=YES, fill=BOTH) 
         bg_canvas.create_image(0,0,anchor=NW, image= bg)
 
-        dialogue_box = Label(bg_canvas, highlightthickness=2, bd= 2, text=dialogue_box_text, font=("Helvetica",14), width = int(width/10), height=int(height/70), relief=SOLID)
-        dialogue_box.place(relx=0.1, rely=0.63)
+        dialogue_box = create_dialogue_box(bg_canvas, width, height)
         def start_attack():
             dialogue_box.config(text="A l'attaque !\nC'est à vous de jouer")
             attack_button.config(command=player_attack)
@@ -260,7 +264,7 @@ def game_menu():#C'est juste un 1er test
                 bot_anim.stop_anim()
                 bot_anim.label.destroy()
                 bot_anim.path = None
-                continue_button.place(relx=0.71,rely=0.91)
+                continue_button.place(relx=0.76,rely=0.91)
                 dialogue_box.config(text="Continuons notre chemin !")
 
         def update_fight():
@@ -291,7 +295,7 @@ def game_menu():#C'est juste un 1er test
                 game_window.after(1500,update_fight)
         
         attack_button = Button(bg_canvas, text="Attaquer", bg="white", font=('Arial', 30),fg="black", command=start_attack, state=ACTIVE)
-        attack_button.place(relx = 0.1, rely=0.91)
+        attack_button.place(relx = 0.15, rely=0.91)
         widget_lst.append(attack_button)
 
         dialogue_box.config(text="Un ennemi! Il ne semble pas nous attaquer, que faire ?")
@@ -315,7 +319,7 @@ def game_menu():#C'est juste un 1er test
         widget_lst.append(heal_button)
 
         do_not_attack_button = Button(bg_canvas, text="Ne pas attaquer", bg="white", font=('Arial', 30),fg="black", command=lambda:next_event(biome,nb_events), state=ACTIVE)
-        do_not_attack_button.place(relx = 0.75, rely=0.91)
+        do_not_attack_button.place(relx = 0.704, rely=0.91)
         widget_lst.append(do_not_attack_button)
 
         continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)))
@@ -339,8 +343,7 @@ def game_menu():#C'est juste un 1er test
         bg_canvas.pack(expand=YES, fill=BOTH) 
         bg_canvas.create_image(0,0,anchor=NW, image= bg)
 
-        dialogue_box = Label(bg_canvas, highlightthickness=2, bd= 2, text=dialogue_box_text, font=("Helvetica",14), width = int(width/10), height=int(height/70), relief=SOLID)
-        dialogue_box.place(relx=0.1, rely=0.63)
+        dialogue_box = create_dialogue_box(bg_canvas, width, height)
 
 
         def player_attack():
@@ -413,7 +416,7 @@ def game_menu():#C'est juste un 1er test
 
             elif not bot.is_alive():
                 bot_anim.stop_anim()
-                continue_button.place(relx=0.71,rely=0.91)
+                continue_button.place(relx=0.76,rely=0.91)
                 dialogue_box.config(text="Continuons notre chemin !")
 
         def update_fight(first_attack=False):
@@ -451,7 +454,7 @@ def game_menu():#C'est juste un 1er test
                 game_window.after(1500,update_fight)
         
         attack_button = Button(bg_canvas, text="Attaquer", bg="white", font=('Arial', 30),fg="black", command=player_attack, state=DISABLED)
-        attack_button.place(relx = 0.1, rely=0.91)
+        attack_button.place(relx = 0.15, rely=0.91)
         widget_lst.append(attack_button)
 
         player_label = Label(game_window, bg = "black")
@@ -504,8 +507,7 @@ def game_menu():#C'est juste un 1er test
         bg_canvas.pack(expand=YES, fill=BOTH) 
         bg_canvas.create_image(0,0,anchor=NW, image= bg)
 
-        dialogue_box = Label(bg_canvas, highlightthickness=2, bd= 2, text=dialogue_box_text, font=("Helvetica",14), width = int(width/10), height=int(height/70), relief=SOLID)
-        dialogue_box.place(relx=0.1, rely=0.63)
+        dialogue_box = create_dialogue_box(bg_canvas, width, height)
         widget_lst.append(dialogue_box)
 
         potion_img = PhotoImage(file="potion.png").subsample(2)
@@ -516,7 +518,7 @@ def game_menu():#C'est juste un 1er test
         dialogue_box.config(text=potion_text)
 
         get_button = Button(bg_canvas, text="Récupérer", bg="white", font=('Arial', 30),fg="black", command=get_potion, state=ACTIVE)
-        get_button.place(relx = 0.1, rely=0.91)
+        get_button.place(relx = 0.15, rely=0.91)
         widget_lst.append(get_button)
 
         player_label = Label(game_window, bg = "black")
@@ -529,7 +531,7 @@ def game_menu():#C'est juste un 1er test
 
         #bot = create_mob(biome)
         continue_button =  Button(bg_canvas, text="Continuer", bg="white", font=('Arial', 30),fg="black", command=lambda:double_fonction(destroy_anim,next_event(biome,nb_events)), state=DISABLED)
-        continue_button.place(relx = 0.75, rely=0.91) 
+        continue_button.place(relx = 0.76, rely=0.91) 
         widget_lst.append(continue_button)
 
 
@@ -561,16 +563,16 @@ def game_menu():#C'est juste un 1er test
         if direction2 == "forest":
             text_dir2 = "la forêt"
 
-        left_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir1}", command=lambda:next_event(direction1, randint(1,5)))
-        right_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir2}", command=lambda: next_event(direction2, randint(1,5)))
+        left_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir1}",font=("Helvetica",20), command=lambda:next_event(direction1, randint(1,5)))
+        right_dir = Button(game_window, width=20, text=f"Pour aller vers {text_dir2}",font=("Helvetica", 20), command=lambda: next_event(direction2, randint(1,5)))
         
-        dialogue_box = Label(game_window, highlightthickness=2, bd= 2, text=direction_text, font=("Helvetica",14), width = int(width/10), height=int(height/70), relief=SOLID)
-        dialogue_box.place(relx=0.1, rely=0.63)
+        dialogue_box = create_dialogue_box(game_window, width, height)
+        dialogue_box.config(text=direction_text)
         widget_lst.append(dialogue_box)
 
-        left_dir.place(relx=0.03, rely=0.4)
+        left_dir.place(relx=0.04, rely=0.4)
         widget_lst.append(left_dir)
-        right_dir.place(relx=0.85, rely=0.4)
+        right_dir.place(relx=0.8, rely=0.4)
         widget_lst.append(right_dir)
 
         widget_lst.append(quit_button)
